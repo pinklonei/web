@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bản đồ vị trí người dùng</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 100vh; }
+
+        /* CSS cho avatar hình tròn */
+        .avatar-icon {
+            width: 50px; /* Chiều rộng và chiều cao bằng nhau để tạo hình tròn */
+            height: 50px;
+            border-radius: 50%; /* Tạo hình tròn */
+            object-fit: cover;
+            border: 2px solid white; /* Viền trắng xung quanh avatar */
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Lấy thông tin người dùng từ Local Storage
+        const userData = JSON.parse(localStorage.getItem("userData"));
+
+        // Lấy vị trí hiện tại của người dùng
+        navigator.geolocation.getCurrentPosition((position) => {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+
+            // Khởi tạo bản đồ Leaflet
+            const map = L.map('map').setView([userLat, userLng], 13);
+
+            // Thêm lớp bản đồ
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Tạo icon cho người dùng
+            const userIcon = L.divIcon({
+                html: `<img src="${userData.photos[0]}" class="avatar-icon">`,
+                iconSize: [50, 50],
+                className: 'user-avatar'
+            });
+
+            // Thêm avatar của người dùng vào bản đồ
+            const userMarker = L.marker([userLat, userLng], { icon: userIcon })
+                .addTo(map)
+                .bindTooltip(`<strong>${userData.name}</strong><br>Email: ${userData.email}<br>Giới tính: ${userData.gender}<br>Sinh nhật: ${userData.birthday}`);
+
+            // Hiển thị thông tin chi tiết khi di chuột vào avatar của người dùng
+            userMarker.on('mouseover', function(e) {
+                userMarker.openTooltip();
+            });
+
+            // Giả lập dữ liệu người dùng gần đó (vị trí giả định)
+            const nearbyUsers = [
+                {
+                    name: "Trịnh Trần Phương Tuấn",
+                    email: "5trieu1thang@gmail.com",
+                    birthday: "01/01/1997",
+                    gender: "Nam",
+                    lat: userLat + 0.01,
+                    lng: userLng + 0.01,
+                    avatar: "images/logo3.jpg"
+                },
+                {
+                    name: "Trần Thiên Ân",
+                    email: "bichoixongbo@gmail.com",
+                    birthday: "02/02/2000",
+                    gender: "Nữ",
+                    lat: userLat - 0.01,
+                    lng: userLng - 0.01,
+                    avatar: "images/logo2.jpg"
+                }
+            ];
+
+            // Thêm các người dùng gần đó vào bản đồ
+            nearbyUsers.forEach(user => {
+                const userNearbyIcon = L.divIcon({
+                    html: `<img src="${user.avatar}" class="avatar-icon">`,
+                    iconSize: [50, 50], // Đảm bảo kích thước là hình vuông
+                    className: 'nearby-avatar'
+                });
+
+                const marker = L.marker([user.lat, user.lng], { icon: userNearbyIcon })
+                    .addTo(map)
+                    .bindTooltip(`<strong>${user.name}</strong><br>Email: ${user.email}<br>Giới tính: ${user.gender}<br>Sinh nhật: ${user.birthday}`);
+
+                marker.on('mouseover', function(e) {
+                    marker.openTooltip();
+                });
+            });
+        }, (error) => {
+            alert("Không thể lấy vị trí hiện tại của bạn. Vui lòng bật định vị.");
+        });
+    </script>
+</body>
+</html>

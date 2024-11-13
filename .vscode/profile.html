@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Thông Tin Cá Nhân</title>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <h2>Tạo tài khoản</h2>
+        </div>
+        <form id="profile-form">
+            <label for="name">Tên</label>
+            <input type="text" id="name" placeholder="Tên" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Email" required>
+
+            <label for="dob">Sinh nhật</label>
+            <div class="dob-inputs">
+                <input type="text" id="day" placeholder="DD" maxlength="2" required>
+                <input type="text" id="month" placeholder="MM" maxlength="2" required>
+                <input type="text" id="year" placeholder="YYYY" maxlength="4" required>
+            </div>
+
+            <label>Giới tính</label>
+            <div class="gender-options">
+                <label><input type="radio" name="gender" value="male" required> Nam</label>
+                <label><input type="radio" name="gender" value="female" required> Nữ</label>
+                <label><input type="radio" name="gender" value="other" required> Thêm</label>
+            </div>
+
+            <label>Quan tâm tới hồ sơ của</label>
+            <div class="interest-options">
+                <label><input type="radio" name="interest" value="male" required> Nam</label>
+                <label><input type="radio" name="interest" value="female" required> Nữ</label>
+                <label><input type="radio" name="interest" value="all" required> Mọi người</label>
+            </div>
+
+            <label>Ảnh hồ sơ</label>
+            <div class="profile-photo-grid">
+                <div class="photo-slot" onclick="uploadImage(0)">+</div>
+                <div class="photo-slot" onclick="uploadImage(1)">+</div>
+                <div class="photo-slot" onclick="uploadImage(2)">+</div>
+                <div class="photo-slot" onclick="uploadImage(3)">+</div>
+                <div class="photo-slot" onclick="uploadImage(4)">+</div>
+                <div class="photo-slot" onclick="uploadImage(5)">+</div>
+            </div>
+
+            <button type="submit">Lưu Thông Tin</button>
+        </form>
+
+        <!-- Hidden file input for uploading images -->
+        <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+    </div>
+
+    <style>
+        /* CSS Styles */
+        body {
+            background-color: #1c1c1c;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .profile-container {
+            width: 400px;
+            padding: 20px;
+            background-color: #2b2b2b;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #3a3a3a;
+            color: #fff;
+        }
+
+        .dob-inputs input {
+            width: 30%;
+            margin-right: 5%;
+        }
+
+        .gender-options,
+        .interest-options {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .profile-photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .photo-slot {
+            width: 100%;
+            height: 80px;
+            background-color: #3a3a3a;
+            color: #ff4c61;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .photo-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ff4c61;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e04358;
+        }
+    </style>
+
+    <script>
+        // JavaScript để xử lý tải ảnh lên
+        let currentSlot = null;
+        const uploadedPhotos = []; // Mảng để lưu URL ảnh nếu có ảnh đã tải lên
+
+        function uploadImage(slotIndex) {
+            currentSlot = slotIndex;
+            document.getElementById("file-input").click();
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+
+                    const photoSlot = document.getElementsByClassName("photo-slot")[currentSlot];
+                    photoSlot.innerHTML = "";
+                    photoSlot.appendChild(img);
+                    uploadedPhotos[currentSlot] = e.target.result; // Lưu ảnh dưới dạng Base64 vào mảng
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Lưu thông tin người dùng vào Local Storage
+        document.getElementById("profile-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const day = document.getElementById("day").value;
+            const month = document.getElementById("month").value;
+            const year = document.getElementById("year").value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const interest = document.querySelector('input[name="interest"]:checked').value;
+
+            const userData = {
+                name,
+                email,
+                birthday: `${day}/${month}/${year}`,
+                gender,
+                interest,
+                photos: uploadedPhotos
+            };
+
+            // Lưu dữ liệu vào localStorage
+            localStorage.setItem("userData", JSON.stringify(userData));
+            alert("Thông tin của bạn đã được lưu!");
+
+        // Chuyển hướng đến trang map.html
+            window.location.href = "map.html";
+            });
+    </script>
+</body>
+</html>

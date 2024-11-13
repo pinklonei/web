@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1147679ae7.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <title>Dating App</title>
+    <head>
+        <!-- Các mã đã có -->
+        <script src="https://kit.fontawesome.com/1147679ae7.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js" defer></script>
+        
+        <!-- Firebase SDK từ phiên bản 8 (dành cho non-modules) -->
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+        
+        <!-- Kết nối Firebase và các tệp mã JavaScript -->
+        <script src="auth.js" defer></script>
+        <title>Dating App</title>
+    </head>
+    
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="location.reload()">
+            <img src="images/logo.png" alt="Logo">
+        </div>        
+        <nav class="menu">
+            <ul class="left-menu">
+                <li><a href="#" id="learn-more">Tìm hiểu</a></li>
+                <li><a href="#" id="support-link">Hỗ trợ</a></li>
+            </ul>
+            <ul class="right-menu">
+                <li><a href="login.html">Đăng Nhập</a></li>
+                <li><a href="register.html">Đăng ký</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Popup khi nhấn "Tìm hiểu" -->
+    <div id="info-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h2>Vậy tại sao bạn nên chọn ứng dụng hẹn hò Datting App?</h2>
+            <p>
+                Khi nói tới ứng dụng hẹn hò, bạn có khả nhiều lựa chọn: Badoo, Bumble, Joyride, Match, POF, OKCupid và ngay cả Instagram hay Facebook cũng trở thành điểm kết nối khá phổ biến giúp mọi người gặp gỡ nhau. Dù bạn đang muốn tìm người yêu, bạn hẹn hay chỉ đơn giản là tìm người kết nối trò chuyện, bạn vẫn muốn tìm ứng dụng phù hợp nhất cho mình. Và đời này đâu phải mọi thứ lúc nào cũng rõ ràng đen trắng — khi bạn muốn gặp gỡ người mới, những người bạn từ Dating App có thể giúp bạn qua các tính năng được thiết kế theo hướng biến những điều không thể thành có thể. Hẹn hò qua mạng từ nay còn dễ hơn nữa!
+            </p>
+        </div>
+    </div>
+
+    <!-- Popup khi nhấn "Hỗ trợ" -->
+    <div id="support-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closeSupportPopup()">&times;</span>
+            <h2>Hỗ trợ</h2>
+            <ul>
+                <li><i class="fas fa-phone-alt"></i> Hotline: <a href="tel:+0372684168">+0372684168</a></li>
+                <li><i class="fab fa-facebook"></i> Facebook: <a href="https://www.facebook.com/minhblabla/" target="_blank">Facebook Admin</a></li>
+                <li><i class="fas fa-envelope"></i> Email: <a href="mailto:admin@dattingapp.com">admin@dattingapp.com</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
