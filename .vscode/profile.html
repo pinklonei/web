@@ -9,7 +9,7 @@
 <body>
     <div class="profile-container">
         <div class="profile-header">
-            <h2>Tạo tài khoản</h2>
+            <h2>Điền thông tin</h2>
         </div>
         <form id="profile-form">
             <label for="name">Tên</label>
@@ -32,11 +32,15 @@
                 <label><input type="radio" name="gender" value="other" required> Thêm</label>
             </div>
 
-            <label>Quan tâm tới hồ sơ của</label>
+            <!-- Sửa phần Quan tâm tới hồ sơ của thành Sở thích -->
+            <label>Sở thích</label>
             <div class="interest-options">
-                <label><input type="radio" name="interest" value="male" required> Nam</label>
-                <label><input type="radio" name="interest" value="female" required> Nữ</label>
-                <label><input type="radio" name="interest" value="all" required> Mọi người</label>
+                <label><input type="radio" name="interest" value="travel" required> Du lịch</label>
+                <label><input type="radio" name="interest" value="music" required> Âm nhạc</label>
+                <label><input type="radio" name="interest" value="sports" required> Thể thao</label>
+                <label><input type="radio" name="interest" value="gaming" required> Chơi game</label>
+                <label><input type="radio" name="interest" value="reading" required> Đọc sách</label>
+                <label><input type="radio" name="interest" value="other" required> Khác</label>
             </div>
 
             <label>Ảnh hồ sơ</label>
@@ -160,59 +164,74 @@
 
     <script>
         // JavaScript để xử lý tải ảnh lên
-        let currentSlot = null;
-        const uploadedPhotos = []; // Mảng để lưu URL ảnh nếu có ảnh đã tải lên
+// JavaScript để xử lý tải ảnh lên
+let currentSlot = null;
+const uploadedPhotos = []; // Mảng để lưu URL ảnh nếu có ảnh đã tải lên
 
-        function uploadImage(slotIndex) {
-            currentSlot = slotIndex;
-            document.getElementById("file-input").click();
+function uploadImage(slotIndex) {
+    currentSlot = slotIndex;
+    document.getElementById("file-input").click();
+}
+
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+
+            const photoSlot = document.getElementsByClassName("photo-slot")[currentSlot];
+            photoSlot.innerHTML = "";
+            photoSlot.appendChild(img);
+            uploadedPhotos[currentSlot] = e.target.result; // Lưu ảnh dưới dạng Base64 vào mảng
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+document.getElementById("profile-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const day = document.getElementById("day").value;
+    const month = document.getElementById("month").value;
+    const year = document.getElementById("year").value;
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    const interest = document.querySelector('input[name="interest"]:checked').value;
+    const birthday = `${year}-${month}-${day}`;
+
+    // Dùng trực tiếp mảng ảnh Base64 đã lọc các giá trị undefined
+    const userData = {
+        name,
+        email,
+        birthday,
+        gender,
+        interest,
+        photos: uploadedPhotos.filter(photo => photo !== undefined) // Lọc các ảnh Base64 hợp lệ
+    };
+
+    try {
+        const response = await fetch("http://localhost:5000/api/user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData) // Gửi dữ liệu dưới dạng JSON
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            window.location.href = "map.html";  // Chuyển hướng sau khi lưu thành công
+        } else {
+            alert("Có lỗi xảy ra khi lưu thông tin.");
         }
-
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement("img");
-                    img.src = e.target.result;
-
-                    const photoSlot = document.getElementsByClassName("photo-slot")[currentSlot];
-                    photoSlot.innerHTML = "";
-                    photoSlot.appendChild(img);
-                    uploadedPhotos[currentSlot] = e.target.result; // Lưu ảnh dưới dạng Base64 vào mảng
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Lưu thông tin người dùng vào Local Storage
-        document.getElementById("profile-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const day = document.getElementById("day").value;
-            const month = document.getElementById("month").value;
-            const year = document.getElementById("year").value;
-            const gender = document.querySelector('input[name="gender"]:checked').value;
-            const interest = document.querySelector('input[name="interest"]:checked').value;
-
-            const userData = {
-                name,
-                email,
-                birthday: `${day}/${month}/${year}`,
-                gender,
-                interest,
-                photos: uploadedPhotos
-            };
-
-            // Lưu dữ liệu vào localStorage
-            localStorage.setItem("userData", JSON.stringify(userData));
-            alert("Thông tin của bạn đã được lưu!");
-
-        // Chuyển hướng đến trang map.html
-            window.location.href = "map.html";
-            });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        alert("Không thể kết nối đến server.");
+    }
+});
     </script>
 </body>
 </html>

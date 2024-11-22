@@ -3,27 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/1147679ae7.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
     <title>Dating App</title>
-    <head>
-        <!-- Các mã đã có -->
-        <script src="https://kit.fontawesome.com/1147679ae7.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="style.css">
-        <script src="script.js" defer></script>
-        
-        <!-- Firebase SDK từ phiên bản 8 (dành cho non-modules) -->
-        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-        
-        <!-- Kết nối Firebase và các tệp mã JavaScript -->
-        <script src="auth.js" defer></script>
-        <title>Dating App</title>
-    </head>
-    
+
+    <!-- Firebase SDK từ phiên bản 8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <!-- Kết nối Firebase -->
+    <script src="auth.js" defer></script>
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="logo" onclick="location.reload()">
             <img src="images/logo.png" alt="Logo">
@@ -44,9 +36,10 @@
     <div id="info-popup" class="popup">
         <div class="popup-content">
             <span class="close-btn" onclick="closePopup()">&times;</span>
-            <h2>Vậy tại sao bạn nên chọn ứng dụng hẹn hò Datting App?</h2>
+            <h2>Tại sao bạn nên chọn ứng dụng hẹn hò Datting?</h2>
             <p>
-                Khi nói tới ứng dụng hẹn hò, bạn có khả nhiều lựa chọn: Badoo, Bumble, Joyride, Match, POF, OKCupid và ngay cả Instagram hay Facebook cũng trở thành điểm kết nối khá phổ biến giúp mọi người gặp gỡ nhau. Dù bạn đang muốn tìm người yêu, bạn hẹn hay chỉ đơn giản là tìm người kết nối trò chuyện, bạn vẫn muốn tìm ứng dụng phù hợp nhất cho mình. Và đời này đâu phải mọi thứ lúc nào cũng rõ ràng đen trắng — khi bạn muốn gặp gỡ người mới, những người bạn từ Dating App có thể giúp bạn qua các tính năng được thiết kế theo hướng biến những điều không thể thành có thể. Hẹn hò qua mạng từ nay còn dễ hơn nữa!
+                Khi nói tới ứng dụng hẹn hò, bạn có nhiều lựa chọn: Badoo, Bumble, Joyride, Match, POF, OKCupid và ngay cả Instagram hay Facebook.
+                Tuy nhiên, ứng dụng của chúng tôi mang lại trải nghiệm độc đáo với nhiều tính năng giúp bạn dễ dàng tìm kiếm kết nối phù hợp.
             </p>
         </div>
     </div>
@@ -63,5 +56,13 @@
             </ul>
         </div>
     </div>
+
+    <!-- Biểu tượng mạng xã hội -->
+    <div class="social-icons">
+        <a href="https://www.facebook.com" target="_blank" class="icon facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com" target="_blank" class="icon instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com" target="_blank" class="icon tiktok"><i class="fab fa-tiktok"></i></a>
+    </div>
+    
 </body>
 </html>

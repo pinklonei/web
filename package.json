@@ -1,8 +1,13 @@
 {
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "pg": "^8.13.1"
+  },
   "name": "friendfinderapp",
-  "version": "1.0.0",
   "description": "Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.",
-  "main": "index.js",
+  "version": "1.0.0",
+  "main": "database.js",
   "directories": {
     "lib": "lib"
   },
@@ -11,13 +16,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.20.3",
-    "cors": "^2.8.5",
-    "express": "^4.21.1",
-    "firebase": "^11.0.1",
-    "leaflet": "^1.9.4",
-    "pg": "^8.13.1"
-  }
+  "license": "ISC"
 }
