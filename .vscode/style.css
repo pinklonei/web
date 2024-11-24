@@ -8,7 +8,7 @@
 
     /* Body với ảnh nền */
     body {
-        background-image: url('images/logo1.png');
+        background-image: url('images/1.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -51,6 +51,7 @@
         padding: 8px 50px;
         height: 70px;
         background-color: rgba(255, 255, 255, 0); /* Nền trong suốt */
+        margin-top: 30px;
     }
 
     /* Logo */
@@ -58,6 +59,7 @@
         display: flex;
         align-items: center;
         cursor: pointer;
+        margin-top: -26px;
     }
 
     .logo img {
@@ -129,14 +131,17 @@
     }
 
     /* Phong cách cho popup "Tìm hiểu" */
-    .popup-content {
-        background-color: #333;
+    #info-popup .popup-content  {
+        background-image: url('images/2.png');
+        background-size: cover; /* Hình ảnh phủ toàn bộ */
+        background-position: center; /* Căn giữa hình ảnh */
+        background-repeat: no-repeat; /* Không lặp lại hình ảnh */
         padding: 20px;
         border-radius: 8px;
         width: 80%;
         max-width: 600px;
         text-align: center;
-        color: #fff;
+        color: #0f0f0f;
     }
 
     .popup-content h2 {
@@ -160,13 +165,17 @@
 
     /* Phong cách cho popup Hỗ trợ */
     #support-popup .popup-content {
+        background-image: url('images/3.png');
+        background-size: cover; /* Hình ảnh phủ toàn bộ */
+        background-position: center; /* Căn giữa hình ảnh */
+        background-repeat: no-repeat; /* Không lặp lại hình ảnh */
         background-color: #444;
         padding: 20px;
         border-radius: 8px;
         width: 80%;
         max-width: 600px;
         text-align: left;
-        color: #fff;
+        color: #000000;
     }
 
     #support-popup .popup-content h2 {

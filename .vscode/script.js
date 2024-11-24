@@ -25,3 +25,4 @@ function closePopup() {
 function closeSupportPopup() {
     document.getElementById("support-popup").style.display = "none";
 }
+

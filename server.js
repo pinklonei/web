@@ -2,18 +2,26 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-// Cấu hình kết nối với cơ sở dữ liệu PostgreSQL
+// Middleware
+app.use(cors({
+    origin: '*', // Cho phép mọi nguồn gốc (thay đổi nếu cần thiết)
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
+}));
+app.use(bodyParser.json({ limit: '10mb' })); // Tăng giới hạn payload JSON
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+
+// Cấu hình kết nối cơ sở dữ liệu PostgreSQL
 const pool = new Pool({
     host: 'localhost',
     user: 'postgres',           // Thay bằng tên người dùng PostgreSQL của bạn
     password: '123456',         // Thay bằng mật khẩu PostgreSQL của bạn
-    database: 'friend_finder',  // Thay bằng tên cơ sở dữ liệu của bạn
-    port: 5433                  // Đảm bảo cổng này trùng với cài đặt PostgreSQL của bạn
+    database: 'friend_finder',  // Tên cơ sở dữ liệu của bạn
+    port: 5433                  // Đảm bảo cổng này trùng với PostgreSQL
 });
 
 // Kiểm tra kết nối cơ sở dữ liệu
@@ -25,74 +33,67 @@ pool.connect((err) => {
     }
 });
 
-// Endpoint để lưu thông tin người dùng
+// Endpoint lưu thông tin người dùng
 app.post('/api/user', async (req, res) => {
-    const { name, email, birthday, gender, interest, photos } = req.body;
+    const { name, email, birthday, gender, interest, photos, latitude, longitude } = req.body;
+
+    if (!latitude || !longitude) {
+        return res.status(400).json({ error: "Vị trí không hợp lệ." });
+    }
 
     try {
         const query = `
-            INSERT INTO users (name, email, birthday, gender, interest, photos) 
-            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
+            INSERT INTO users (name, email, birthday, gender, interest, photos, latitude, longitude) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *
         `;
-        const values = [name, email, birthday, gender, interest, photos];
+        const values = [name, email, birthday, gender, interest, photos, latitude, longitude];
         const result = await pool.query(query, values);
-        
-        // Trả về thông tin người dùng vừa lưu
+
         res.status(201).json(result.rows[0]);
-        console.log("Thông tin người dùng đã lưu:", result.rows[0]);
     } catch (err) {
         console.error("Lỗi khi lưu thông tin người dùng:", err);
-        res.status(500).json({ error: 'Có lỗi xảy ra khi lưu dữ liệu người dùng.' });
+        res.status(500).json({ error: 'Có lỗi xảy ra khi lưu thông tin người dùng.' });
     }
 });
 
-// Endpoint để lấy thông tin người dùng hiện tại
-app.get('/api/user/current', async (req, res) => {
-    const { userId } = req.query;
-
-    try {
-        const query = `SELECT * FROM users WHERE user_id = $1`;
-        const result = await pool.query(query, [userId]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Không tìm thấy người dùng.' });
-        }
-        res.status(200).json(result.rows[0]);
-    } catch (err) {
-        console.error('Lỗi khi lấy thông tin người dùng hiện tại:', err);
-        res.status(500).json({ error: 'Có lỗi xảy ra khi lấy thông tin người dùng.' });
-    }
-});
-
-// Endpoint để tìm người dùng gần đó
+// Endpoint tìm người dùng gần đó
 app.get('/api/nearby-users', async (req, res) => {
     const { lat, lng, userId } = req.query;
 
+    if (!lat || !lng || !userId) {
+        return res.status(400).json({ error: 'Vui lòng cung cấp thông tin vị trí và ID người dùng' });
+    }
+
     try {
         const query = `
-            SELECT u.name, u.email, u.gender, u.birthday, 
-                   ST_Distance(l.geom, ST_SetSRID(ST_MakePoint($1, $2), 4326)) AS distance
+            SELECT u.name, u.email, u.gender, u.birthday, u.interest, u.photos, u.latitude, u.longitude,
+                   ST_Distance(ST_SetSRID(ST_MakePoint($2, $1), 4326), ST_SetSRID(ST_MakePoint(u.longitude, u.latitude), 4326)) AS distance
             FROM users u
-            JOIN locations l ON u.user_id = l.user_id
             WHERE u.user_id != $3
-              AND ST_DWithin(l.geom, ST_SetSRID(ST_MakePoint($1, $2), 4326), 5000)  -- bán kính 5km
-            ORDER BY distance ASC  -- Sắp xếp theo khoảng cách gần nhất
+            ORDER BY distance ASC
+            LIMIT 4
         `;
-        const values = [lng, lat, userId];
+
+        const values = [parseFloat(lat), parseFloat(lng), parseInt(userId, 10)];
+        console.log("Debug - Tham số truy vấn:", values);
+
         const result = await pool.query(query, values);
-        
-        // Trả về danh sách người dùng gần đó
+        console.log("Kết quả truy vấn người dùng gần đó:", result.rows);
+
         res.status(200).json(result.rows);
-        console.log("Người dùng gần đó:", result.rows);
     } catch (err) {
-        console.error("Lỗi khi lấy dữ liệu người dùng gần đó:", err);
-        res.status(500).json({ error: 'Có lỗi xảy ra khi lấy dữ liệu người dùng gần đó.' });
+        console.error('Lỗi khi lấy dữ liệu người dùng gần đó:', err);
+        res.status(500).json({ error: 'Có lỗi xảy ra khi lấy dữ liệu người dùng gần đó' });
     }
 });
 
-// Endpoint để cập nhật vị trí người dùng
+// Endpoint cập nhật vị trí người dùng
 app.post('/api/update-location', async (req, res) => {
     const { userId, lat, lng } = req.body;
+
+    if (!userId || !lat || !lng) {
+        return res.status(400).json({ error: 'Vui lòng cung cấp đầy đủ thông tin' });
+    }
 
     try {
         const query = `
@@ -100,28 +101,30 @@ app.post('/api/update-location', async (req, res) => {
             VALUES ($1, ST_SetSRID(ST_MakePoint($2, $3), 4326))
             ON CONFLICT (user_id)
             DO UPDATE SET geom = ST_SetSRID(ST_MakePoint($2, $3), 4326)
-            RETURNING *
         `;
-        const values = [userId, lng, lat];
-        const result = await pool.query(query, values);
 
-        res.status(200).json(result.rows[0]);
-        console.log("Cập nhật vị trí người dùng:", result.rows[0]);
+        const values = [parseInt(userId, 10), parseFloat(lng), parseFloat(lat)];
+        console.log("Debug - Cập nhật vị trí:", values);
+
+        await pool.query(query, values);
+
+        res.status(200).json({ message: 'Cập nhật vị trí thành công' });
     } catch (err) {
-        console.error("Lỗi khi cập nhật vị trí người dùng:", err);
-        res.status(500).json({ error: 'Có lỗi xảy ra khi cập nhật vị trí người dùng.' });
+        console.error('Lỗi khi cập nhật vị trí người dùng:', err);
+        res.status(500).json({ error: 'Có lỗi xảy ra khi cập nhật vị trí' });
     }
 });
 
-// Cấu hình để Express phục vụ các file tĩnh (HTML, CSS, JS)
+// Phục vụ file tĩnh từ thư mục "public"
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Endpoint để hiển thị file HTML
+// Endpoint mặc định hiển thị file HTML
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'map.html'));
+    res.sendFile(path.join(__dirname, 'public', 'profile.html'));
 });
 
-// Chạy server
-app.listen(5000, () => {
-    console.log('Server đang chạy trên cổng 5000');
+// Khởi động server
+const PORT = 5000;
+app.listen(PORT, () => {
+    console.log(`Server đang chạy trên cổng ${PORT}`);
 });

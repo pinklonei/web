@@ -13,26 +13,25 @@
         </div>
         <form id="profile-form">
             <label for="name">Tên</label>
-            <input type="text" id="name" placeholder="Tên" required>
+            <input type="text" id="name" placeholder="Tên của bạn" required>
 
             <label for="email">Email</label>
-            <input type="email" id="email" placeholder="Email" required>
+            <input type="email" id="email" placeholder="example@gmail.com" required>
 
             <label for="dob">Sinh nhật</label>
             <div class="dob-inputs">
-                <input type="text" id="day" placeholder="DD" maxlength="2" required>
-                <input type="text" id="month" placeholder="MM" maxlength="2" required>
-                <input type="text" id="year" placeholder="YYYY" maxlength="4" required>
+                <input type="number" id="day" placeholder="Ngày" min="1" max="31" required>
+                <input type="number" id="month" placeholder="Tháng" min="1" max="12" required>
+                <input type="number" id="year" placeholder="Năm" min="1900" max="2024" required>
             </div>
 
             <label>Giới tính</label>
             <div class="gender-options">
                 <label><input type="radio" name="gender" value="male" required> Nam</label>
                 <label><input type="radio" name="gender" value="female" required> Nữ</label>
-                <label><input type="radio" name="gender" value="other" required> Thêm</label>
+                <label><input type="radio" name="gender" value="other" required> Khác</label>
             </div>
 
-            <!-- Sửa phần Quan tâm tới hồ sơ của thành Sở thích -->
             <label>Sở thích</label>
             <div class="interest-options">
                 <label><input type="radio" name="interest" value="travel" required> Du lịch</label>
@@ -46,11 +45,6 @@
             <label>Ảnh hồ sơ</label>
             <div class="profile-photo-grid">
                 <div class="photo-slot" onclick="uploadImage(0)">+</div>
-                <div class="photo-slot" onclick="uploadImage(1)">+</div>
-                <div class="photo-slot" onclick="uploadImage(2)">+</div>
-                <div class="photo-slot" onclick="uploadImage(3)">+</div>
-                <div class="photo-slot" onclick="uploadImage(4)">+</div>
-                <div class="photo-slot" onclick="uploadImage(5)">+</div>
             </div>
 
             <button type="submit">Lưu Thông Tin</button>
@@ -63,7 +57,10 @@
     <style>
         /* CSS Styles */
         body {
-            background-color: #1c1c1c;
+            background-image: url('images/2.png'); /* Nền với ảnh 2 */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #fff;
             font-family: Arial, sans-serif;
             display: flex;
@@ -74,47 +71,80 @@
         }
 
         .profile-container {
-            width: 400px;
-            padding: 20px;
-            background-color: #2b2b2b;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            width: 450px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1); /* Hiệu ứng nền mờ */
+            backdrop-filter: blur(10px); /* Làm mờ nền phía sau */
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
         }
 
-        h2 {
+        .profile-header h2 {
             text-align: center;
+            font-size: 28px;
+            color: #fff;
             margin-bottom: 20px;
-            font-size: 24px;
         }
 
         label {
             display: block;
+            font-size: 16px;
+            color: #fff;
             margin-top: 15px;
-            font-size: 14px;
-            color: #bbb;
+            margin-bottom: 5px;
         }
 
         input[type="text"],
-        input[type="email"] {
+        input[type="email"],
+        input[type="number"] {
             width: 100%;
             padding: 10px;
-            margin-top: 5px;
-            border: none;
-            border-radius: 4px;
-            background-color: #3a3a3a;
+            margin-bottom: 15px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2); /* Nền mờ */
             color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus {
+            border-color: #ff4c61; /* Đổi màu viền khi focus */
+        }
+
+        .dob-inputs {
+            display: flex;
+            gap: 10px;
         }
 
         .dob-inputs input {
-            width: 30%;
-            margin-right: 5%;
+            flex: 1;
         }
 
         .gender-options,
         .interest-options {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
+            flex-wrap: wrap;
             margin-top: 10px;
+        }
+
+        .gender-options label,
+        .interest-options label {
+            flex: 1;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .gender-options label input,
+        .interest-options label input {
+            transform: scale(1.2);
         }
 
         .profile-photo-grid {
@@ -127,15 +157,20 @@
         .photo-slot {
             width: 100%;
             height: 80px;
-            background-color: #3a3a3a;
+            background-color: rgba(255, 255, 255, 0.2);
             color: #ff4c61;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 24px;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        .photo-slot:hover {
+            background-color: rgba(255, 255, 255, 0.3);
         }
 
         .photo-slot img {
@@ -147,14 +182,16 @@
 
         button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             background-color: #ff4c61;
             color: #fff;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -163,75 +200,85 @@
     </style>
 
     <script>
-        // JavaScript để xử lý tải ảnh lên
-// JavaScript để xử lý tải ảnh lên
-let currentSlot = null;
-const uploadedPhotos = []; // Mảng để lưu URL ảnh nếu có ảnh đã tải lên
+        let currentSlot = null;
+        const uploadedPhotos = []; // Mảng để lưu URL ảnh đã tải lên
 
-function uploadImage(slotIndex) {
-    currentSlot = slotIndex;
-    document.getElementById("file-input").click();
-}
-
-function handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement("img");
-            img.src = e.target.result;
-
-            const photoSlot = document.getElementsByClassName("photo-slot")[currentSlot];
-            photoSlot.innerHTML = "";
-            photoSlot.appendChild(img);
-            uploadedPhotos[currentSlot] = e.target.result; // Lưu ảnh dưới dạng Base64 vào mảng
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-document.getElementById("profile-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const day = document.getElementById("day").value;
-    const month = document.getElementById("month").value;
-    const year = document.getElementById("year").value;
-    const gender = document.querySelector('input[name="gender"]:checked').value;
-    const interest = document.querySelector('input[name="interest"]:checked').value;
-    const birthday = `${year}-${month}-${day}`;
-
-    // Dùng trực tiếp mảng ảnh Base64 đã lọc các giá trị undefined
-    const userData = {
-        name,
-        email,
-        birthday,
-        gender,
-        interest,
-        photos: uploadedPhotos.filter(photo => photo !== undefined) // Lọc các ảnh Base64 hợp lệ
-    };
-
-    try {
-        const response = await fetch("http://localhost:5000/api/user", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData) // Gửi dữ liệu dưới dạng JSON
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            window.location.href = "map.html";  // Chuyển hướng sau khi lưu thành công
-        } else {
-            alert("Có lỗi xảy ra khi lưu thông tin.");
+        function uploadImage(slotIndex) {
+            currentSlot = slotIndex;
+            document.getElementById("file-input").click();
         }
-    } catch (error) {
-        console.error("Lỗi:", error);
-        alert("Không thể kết nối đến server.");
-    }
-});
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+
+                    const photoSlot = document.getElementsByClassName("photo-slot")[currentSlot];
+                    photoSlot.innerHTML = "";
+                    photoSlot.appendChild(img);
+                    uploadedPhotos[currentSlot] = e.target.result; // Lưu ảnh dưới dạng Base64
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.getElementById("profile-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const day = document.getElementById("day").value;
+            const month = document.getElementById("month").value;
+            const year = document.getElementById("year").value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const interest = document.querySelector('input[name="interest"]:checked').value;
+            const birthday = `${year}-${month}-${day}`;
+
+            if (!navigator.geolocation) {
+                alert("Trình duyệt không hỗ trợ lấy vị trí.");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                const userData = {
+                    name,
+                    email,
+                    birthday,
+                    gender,
+                    interest,
+                    photos: uploadedPhotos.filter(photo => photo !== undefined),
+                    latitude: lat,
+                    longitude: lng
+                };
+
+                try {
+                    const response = await fetch("http://localhost:5000/api/user", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(userData)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        localStorage.setItem("currentUser", JSON.stringify(result));
+                        window.location.href = "map.html";
+                    } else {
+                        alert("Có lỗi xảy ra khi lưu thông tin.");
+                    }
+                } catch (error) {
+                    console.error("Lỗi:", error);
+                    alert("Không thể kết nối đến server.");
+                }
+            });
+        });
     </script>
 </body>
 </html>
