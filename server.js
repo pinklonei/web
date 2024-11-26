@@ -8,23 +8,22 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: '*', // Cho phép mọi nguồn gốc (thay đổi nếu cần thiết)
+    origin: '*', 
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
-app.use(bodyParser.json({ limit: '10mb' })); // Tăng giới hạn payload JSON
+app.use(bodyParser.json({ limit: '10mb' })); 
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
-// Cấu hình kết nối cơ sở dữ liệu PostgreSQL
+
 const pool = new Pool({
     host: 'localhost',
-    user: 'postgres',           // Thay bằng tên người dùng PostgreSQL của bạn
-    password: '123456',         // Thay bằng mật khẩu PostgreSQL của bạn
-    database: 'friend_finder',  // Tên cơ sở dữ liệu của bạn
-    port: 5433                  // Đảm bảo cổng này trùng với PostgreSQL
+    user: 'postgres',          
+    password: '123456',         
+    database: 'friend_finder',  
+    port: 5433                  
 });
 
-// Kiểm tra kết nối cơ sở dữ liệu
 pool.connect((err) => {
     if (err) {
         console.error('Lỗi kết nối cơ sở dữ liệu:', err);

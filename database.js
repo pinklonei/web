@@ -2,11 +2,11 @@ const { Client } = require('pg');
 
 // Tạo kết nối tới cơ sở dữ liệu
 const client = new Client({
-    host: 'localhost',      // Địa chỉ host của PostgreSQL
-    user: 'postgres',       // Tên người dùng PostgreSQL
-    password: '123456',  // Mật khẩu
-    database: 'friend_finder', // Tên cơ sở dữ liệu
-    port: 5433              // Cổng PostgreSQL (mặc định là 5432)
+    host: 'localhost',    
+    user: 'postgres',     
+    password: '123456',  
+    database: 'friend_finder', 
+    port: 5433              
 });
 
 // Hàm kết nối và truy vấn
